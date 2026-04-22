@@ -1,0 +1,34 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# requirements-dev.txt — Minimal dependencies for LOCAL DEVELOPMENT
+# Windows / macOS / Linux — uses SQLite, no Redis, no Celery
+#
+# Usage:  pip install -r requirements-dev.txt
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── Core Django ──────────────────────────────────────────────────────────────
+Django==4.2.9
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+django-cors-headers==4.3.1
+django-filter==23.5
+
+# ── Pillow — use >= so pip picks the right pre-built wheel for your Python ────
+Pillow>=10.3.0
+
+# ── Config ───────────────────────────────────────────────────────────────────
+python-decouple>=3.8
+dj-database-url>=2.1.0
+
+# ── Payments ─────────────────────────────────────────────────────────────────
+razorpay>=1.4.1
+
+# ── Security ─────────────────────────────────────────────────────────────────
+cryptography>=42.0.0
+
+# ── Static files (dev) ───────────────────────────────────────────────────────
+whitenoise>=6.6.0
+
+# ── Short UUIDs ──────────────────────────────────────────────────────────────
+shortuuid>=1.0.11
+
+# NOTE: psycopg2, redis, celery, gunicorn are NOT included — not needed locally

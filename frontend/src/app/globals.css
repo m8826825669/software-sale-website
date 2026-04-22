@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-syne: 'Syne', sans-serif;
+  --font-dm-sans: 'DM Sans', sans-serif;
+  --font-jetbrains: 'JetBrains Mono', monospace;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: var(--font-dm-sans);
+    background-color: #080916;
+    color: #e8eaf6;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(90, 95, 255, 0.35);
+    color: #ffffff;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0e0f1e; }
+  ::-webkit-scrollbar-thumb { background: #2e22b5; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #5a5fff; }
+}
+
+@layer components {
+  /* ── Gradient text ── */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-ink-400 via-ink-300 to-gold-400;
+  }
+
+  .gradient-text-blue {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-ink-300 to-ink-500;
+  }
+
+  /* ── Glow effects ── */
+  .glow-ink {
+    box-shadow: 0 0 40px rgba(90, 95, 255, 0.35), 0 0 80px rgba(90, 95, 255, 0.15);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 30px rgba(246, 200, 75, 0.3), 0 0 60px rgba(246, 200, 75, 0.1);
+  }
+
+  /* ── Glass card ── */
+  .glass {
+    background: rgba(14, 15, 30, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .glass-light {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* ── Primary button ── */
+  .btn-primary {
+    @apply relative inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white font-body
+           bg-ink-600 hover:bg-ink-500 transition-all duration-200 overflow-hidden;
+    box-shadow: 0 0 0 1px rgba(90,95,255,0.4), 0 4px 20px rgba(90,95,255,0.25);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 0 0 1px rgba(90,95,255,0.7), 0 8px 30px rgba(90,95,255,0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  /* ── Secondary button ── */
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-200 font-body;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #c5cae9;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(90, 95, 255, 0.4);
+    color: white;
+  }
+
+  /* ── Gold button ── */
+  .btn-gold {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-surface-950 font-body transition-all duration-200;
+    background: linear-gradient(135deg, #f6c84b, #f0b429);
+    box-shadow: 0 4px 20px rgba(246, 200, 75, 0.3);
+  }
+
+  .btn-gold:hover {
+    box-shadow: 0 6px 30px rgba(246, 200, 75, 0.5);
+    transform: translateY(-1px);
+  }
+
+  /* ── Input ── */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 outline-none transition-all duration-200 font-body;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.9375rem;
+  }
+
+  .input-field:focus {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(90, 95, 255, 0.6);
+    box-shadow: 0 0 0 3px rgba(90, 95, 255, 0.15);
+  }
+
+  /* ── Card ── */
+  .card {
+    @apply rounded-2xl p-6 transition-all duration-300 glass;
+  }
+
+  .card:hover {
+    border-color: rgba(90, 95, 255, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(90, 95, 255, 0.15);
+  }
+
+  /* ── Badge ── */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold font-mono;
+  }
+
+  .badge-blue {
+    @apply badge text-ink-300;
+    background: rgba(90, 95, 255, 0.12);
+    border: 1px solid rgba(90, 95, 255, 0.25);
+  }
+
+  .badge-gold {
+    @apply badge text-gold-400;
+    background: rgba(246, 200, 75, 0.1);
+    border: 1px solid rgba(246, 200, 75, 0.25);
+  }
+
+  .badge-green {
+    @apply badge text-emerald-400;
+    background: rgba(52, 211, 153, 0.1);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+  }
+
+  /* ── Section ── */
+  .section { @apply py-20 md:py-28; }
+  .container-xl { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+
+  /* ── Noise overlay ── */
+  .noise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+/* ── Animations ── */
+@keyframes orbit {
+  0%   { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+}
+
+.orbit { animation: orbit 12s linear infinite; }
+
+/* ── Stagger delays ── */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+
+/* ── Opacity starts at 0 for animated elements ── */
+.animate-fade-up { opacity: 0; }

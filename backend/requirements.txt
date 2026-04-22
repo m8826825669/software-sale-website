@@ -1,0 +1,39 @@
+# ── Core Django ─────────────────────────────────────────────────────────────
+Django==4.2.9
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+django-cors-headers==4.3.1
+django-filter==23.5
+
+# ── Image handling (use >= to pick pre-built wheels) ─────────────────────────
+Pillow>=10.3.0
+
+# ── Database ─────────────────────────────────────────────────────────────────
+psycopg2-binary>=2.9.9        # PostgreSQL (production)
+dj-database-url>=2.1.0
+
+# ── Auth / Security ──────────────────────────────────────────────────────────
+cryptography>=42.0.0
+python-decouple>=3.8
+
+# ── Payments ─────────────────────────────────────────────────────────────────
+razorpay>=1.4.1
+
+# ── File Storage ─────────────────────────────────────────────────────────────
+django-storages>=1.14.2
+boto3>=1.34.0
+
+# ── Short UUIDs ──────────────────────────────────────────────────────────────
+shortuuid>=1.0.11
+
+# ── Production server ────────────────────────────────────────────────────────
+gunicorn>=21.2.0
+whitenoise>=6.6.0
+
+# ── Cache / Queue (production only — skip in dev) ────────────────────────────
+redis>=5.0.1
+django-redis>=5.4.0
+celery>=5.3.6
+
+# ── Validation ───────────────────────────────────────────────────────────────
+djangorestframework[validator]
