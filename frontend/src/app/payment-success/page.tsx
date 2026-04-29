@@ -1,16 +1,12 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { CheckCircle2, Key, Download, LayoutDashboard, ArrowRight, Mail, Loader2 } from 'lucide-react'
+import { CheckCircle2, Key, Download, LayoutDashboard, ArrowRight, Mail } from 'lucide-react'
 import Navbar from '@/components/Navbar'
-import confetti from 'canvas-confetti'
 
-// Minimal confetti — loaded inline to avoid npm dep
-declare const confetti: any
-
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams()
   const router       = useRouter()
   const orderNumber  = searchParams.get('order')
@@ -19,23 +15,23 @@ export default function PaymentSuccessPage() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    // Trigger confetti on mount
     const script = document.createElement('script')
     script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js'
+    script.async = true
+    const cleanup = (): void => {
+      if (document.head.contains(script)) document.head.removeChild(script)
+    }
     script.onload = () => {
-      const fire = (w: number, opts: any) =>
-        (window as any).confetti?.({
-          ...opts, particleCount: Math.floor(200 * w), spread: 70 * w,
-          colors: ['#5a5fff', '#f6c84b', '#34d399', '#f472b6'],
-        })
+      const c = (window as { confetti?: (opts: object) => void }).confetti
+      if (!c) return
       setTimeout(() => {
-        fire(0.25, { origin: { y: 0.7 }, angle: 55 })
-        fire(0.2,  { origin: { y: 0.7 }, angle: 125 })
-        fire(0.35, { origin: { y: 0.7 } })
+        c({ particleCount: 60, spread: 70, origin: { y: 0.7 }, angle: 55,  colors: ['#5a5fff', '#f6c84b', '#34d399'] })
+        c({ particleCount: 50, spread: 70, origin: { y: 0.7 }, angle: 125, colors: ['#5a5fff', '#f6c84b', '#f472b6'] })
+        c({ particleCount: 80, spread: 70, origin: { y: 0.7 },             colors: ['#5a5fff', '#34d399', '#f6c84b'] })
       }, 200)
     }
     document.head.appendChild(script)
-    return () => document.head.removeChild(script)
+    return cleanup
   }, [])
 
   const copyKey = () => {
@@ -55,15 +51,12 @@ export default function PaymentSuccessPage() {
       <Navbar />
       <div className="pt-28 pb-20">
         <div className="container-xl max-w-2xl">
-
-          {/* Success card */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', duration: 0.6 }}
             className="card text-center py-14 px-8 relative overflow-hidden"
           >
-            {/* BG glow */}
             <div className="absolute inset-0 pointer-events-none"
               style={{ background: 'radial-gradient(ellipse 80% 60% at 50% -20%, rgba(52,211,153,0.1) 0%, transparent 70%)' }} />
 
@@ -78,45 +71,43 @@ export default function PaymentSuccessPage() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
               <div className="badge-green inline-block mb-4">Payment Confirmed</div>
               <h1 className="font-display text-3xl md:text-4xl font-extrabold text-white mb-3">
-                🎉 You're all set!
+                🎉 You&apos;re all set!
               </h1>
               <p className="text-gray-400 text-lg mb-2">{productName}</p>
               <p className="text-sm text-gray-600 mb-8">Order #{orderNumber}</p>
             </motion.div>
 
-            {/* License key display */}
             {licenseKey && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
                 className="mb-8"
               >
                 <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-3">Your License Key</p>
-                <div className="flex items-center justify-center gap-3">
-                  <code className="font-mono text-lg md:text-xl text-ink-300 bg-ink-950/80 px-5 py-3 rounded-2xl border border-ink-700/50 tracking-widest">
+                <div className="flex items-center justify-center gap-3 flex-wrap">
+                  <code className="font-mono text-base md:text-xl text-ink-300 bg-ink-950/80 px-5 py-3 rounded-2xl border border-ink-700/50 tracking-widest break-all">
                     {licenseKey}
                   </code>
                   <button onClick={copyKey}
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all shrink-0 ${
                       copied ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400' : 'glass-light hover:border-ink-500/40 text-gray-400'
                     }`}>
                     {copied ? '✓' : '⎘'}
                   </button>
                 </div>
                 <p className="text-xs text-gray-600 mt-2">
-                  {copied ? '✓ Copied to clipboard!' : 'Click to copy — also emailed to you'}
+                  {copied ? '✓ Copied!' : 'Click to copy — also emailed to you'}
                 </p>
               </motion.div>
             )}
 
-            {/* Steps */}
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
               className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 text-left"
             >
               {[
-                { icon: Key,      step: '01', title: 'Key saved',      desc: 'Your license key is in your dashboard, always accessible.' },
-                { icon: Download, step: '02', title: 'Download ready',  desc: 'Click Download in My Licenses to get the installer.' },
-                { icon: Mail,     step: '03', title: 'Email sent',      desc: 'Check your inbox for receipt + install instructions.' },
+                { icon: Key,      step: '01', title: 'Key saved',      desc: 'License key is in your dashboard, always accessible.' },
+                { icon: Download, step: '02', title: 'Download ready',  desc: 'Go to My Licenses and click Download to get the installer.' },
+                { icon: Mail,     step: '03', title: 'Email sent',      desc: 'Check your inbox for receipt and install instructions.' },
               ].map(({ icon: Icon, step, title, desc }) => (
                 <div key={step} className="glass rounded-2xl p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -129,7 +120,6 @@ export default function PaymentSuccessPage() {
               ))}
             </motion.div>
 
-            {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
               className="flex flex-col sm:flex-row gap-3 justify-center"
@@ -143,11 +133,20 @@ export default function PaymentSuccessPage() {
             </motion.div>
 
             <p className="text-xs text-gray-700 mt-6">
-              Need help? Email <a href="mailto:support@softcraft.in" className="text-gray-600 hover:text-gray-400">support@softcraft.in</a> or WhatsApp +91 98765 43210
+              Need help? Email{' '}
+              <a href="mailto:support@softcraft.in" className="text-gray-600 hover:text-gray-400">support@softcraft.in</a>
             </p>
           </motion.div>
         </div>
       </div>
     </div>
+  )
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={null}>
+      <PaymentSuccessContent />
+    </Suspense>
   )
 }

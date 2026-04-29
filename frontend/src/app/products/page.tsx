@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Search, Filter, Star, ArrowRight, Package, Loader2 } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import TryDemoButton from '@/components/TryDemoButton'
 import { productsAPI } from '@/lib/api'
 
 export default function ProductsPage() {
@@ -126,10 +127,23 @@ export default function ProductsPage() {
                       </div>
                       <div className="text-[10px] text-gray-600">one-time · lifetime</div>
                     </div>
-                    <Link href={`/products/${p.slug}`}
-                      className="btn-primary text-sm py-2 px-4 gap-1.5">
-                      Buy Now <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <TryDemoButton
+                        demo={{
+                          type: (p.demo_type as any) || 'request',
+                          url: p.demo_url || '',
+                          trialDays: p.trial_days || 15,
+                          productName: p.name,
+                          productSlug: p.slug,
+                          productEmoji: p.emoji,
+                        }}
+                        variant="card"
+                      />
+                      <Link href={`/products/${p.slug}`}
+                        className="btn-primary text-sm py-2 px-4 gap-1.5">
+                        Buy Now <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -144,10 +158,10 @@ export default function ProductsPage() {
 
 // Sample data for when API is not running
 const SAMPLE_PRODUCTS = [
-  { id: '1', slug: 'school-erp', name: 'School Management ERP', emoji: '🏫', tagline: 'Complete school administration — students, attendance, fees, exams, library and more.', tags: ['Students', 'Attendance', 'Fees', 'Library', 'Results'], price: '₹4,999', is_featured: true, rating: 4.9, rating_count: 87 },
-  { id: '2', slug: 'clinic-manager', name: 'Clinic Manager Pro', emoji: '🏥', tagline: 'Patient records, SOAP notes, prescriptions, appointments, and billing in one app.', tags: ['OPD', 'ABHA', 'Billing', 'Prescriptions'], price: '₹7,999', is_featured: false, rating: 4.8, rating_count: 54 },
-  { id: '3', slug: 'medical-store', name: 'Medical Store ERP', emoji: '💊', tagline: 'FEFO inventory, GST billing, expiry alerts, barcode scanning, and POS interface.', tags: ['Inventory', 'GST', 'POS', 'FEFO'], price: '₹3,499', is_featured: false, rating: 4.7, rating_count: 43 },
-  { id: '4', slug: 'accounting', name: 'BharatBooks Accounting', emoji: '📊', tagline: 'GST-compliant accounting for small businesses — invoicing, expenses, P&L, balance sheet.', tags: ['GST', 'Invoicing', 'Tally Alternative'], price: '₹2,999', is_featured: false, rating: 4.6, rating_count: 31 },
-  { id: '5', slug: 'hrms', name: 'HRMS Pro', emoji: '👥', tagline: 'Complete HR management — recruitment, payroll, attendance, leaves, and appraisals.', tags: ['Payroll', 'Recruitment', 'Leaves', 'Appraisal'], price: '₹5,999', is_featured: false, rating: 4.5, rating_count: 22 },
-  { id: '6', slug: 'fantasy-sports', name: 'Fantasy Sports Platform', emoji: '🏏', tagline: 'Full-stack fantasy sports platform with real-time scoring, wallets, and KYC.', tags: ['Real-time', 'Wallet', 'KYC', 'UPI'], price: '₹29,999', is_featured: false, rating: 4.8, rating_count: 12 },
+  { id: '1', slug: 'school-erp',    name: 'School Management ERP',    emoji: '🏫', tagline: 'Complete school administration — students, attendance, fees, exams, library and more.', tags: ['Students', 'Attendance', 'Fees', 'Library'], price: '₹4,999', is_featured: true,  rating: 4.9, rating_count: 87, demo_type: 'request', demo_url: '', trial_days: 15 },
+  { id: '2', slug: 'clinic-manager',name: 'Clinic Manager Pro',        emoji: '🏥', tagline: 'Patient records, SOAP notes, prescriptions, appointments, and billing in one app.',       tags: ['OPD', 'ABHA', 'Billing', 'Prescriptions'], price: '₹7,999', is_featured: false, rating: 4.8, rating_count: 54, demo_type: 'request', demo_url: '', trial_days: 15 },
+  { id: '3', slug: 'medical-store', name: 'Medical Store ERP',         emoji: '💊', tagline: 'FEFO inventory, GST billing, expiry alerts, barcode scanning, and POS interface.',        tags: ['Inventory', 'GST', 'POS', 'FEFO'],         price: '₹3,499', is_featured: false, rating: 4.7, rating_count: 43, demo_type: 'online',  demo_url: 'https://demo.softcraft.in/medical-store', trial_days: 0 },
+  { id: '4', slug: 'accounting',    name: 'BharatBooks Accounting',    emoji: '📊', tagline: 'GST-compliant accounting for small businesses — invoicing, expenses, P&L, balance sheet.', tags: ['GST', 'Invoicing', 'Tally Alternative'],   price: '₹2,999', is_featured: false, rating: 4.6, rating_count: 31, demo_type: 'trial',   demo_url: '', trial_days: 15 },
+  { id: '5', slug: 'hrms',          name: 'HRMS Pro',                  emoji: '👥', tagline: 'Complete HR management — recruitment, payroll, attendance, leaves, and appraisals.',      tags: ['Payroll', 'Recruitment', 'Leaves'],        price: '₹5,999', is_featured: false, rating: 4.5, rating_count: 22, demo_type: 'request', demo_url: '', trial_days: 15 },
+  { id: '6', slug: 'fantasy-sports',name: 'Fantasy Sports Platform',   emoji: '🏏', tagline: 'Full-stack fantasy sports platform with real-time scoring, wallets, and KYC.',           tags: ['Real-time', 'Wallet', 'KYC', 'UPI'],       price: '₹29,999',is_featured: false, rating: 4.8, rating_count: 12, demo_type: 'request', demo_url: '', trial_days: 0 },
 ]

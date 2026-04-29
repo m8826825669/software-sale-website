@@ -7,6 +7,7 @@ import { Check, Star, Download, ArrowRight, Monitor, Cpu, HardDrive,
          ChevronLeft, Loader2, Play, Shield, RefreshCw, Users, Zap } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import TryDemoButton from '@/components/TryDemoButton'
 import { productsAPI } from '@/lib/api'
 import { useAuthStore } from '@/lib/store'
 
@@ -224,6 +225,18 @@ export default function ProductDetailPage() {
                     <button onClick={handleBuy} className="btn-gold w-full justify-center py-4 text-base font-bold mb-3">
                       Buy Now — ₹{total.toLocaleString('en-IN')} <ArrowRight className="w-5 h-5" />
                     </button>
+                    <TryDemoButton
+                      demo={{
+                        type: (product.demo_type as any) || 'request',
+                        url:  product.demo_url || '',
+                        trialDays: product.trial_days || 15,
+                        productName: product.name,
+                        productSlug: slug,
+                        productEmoji: product.emoji,
+                      }}
+                      variant="outline"
+                      className="w-full justify-center py-3"
+                    />
                     <p className="text-center text-xs text-gray-600">
                       Secure payment via Razorpay · Instant license delivery · GST invoice included
                     </p>

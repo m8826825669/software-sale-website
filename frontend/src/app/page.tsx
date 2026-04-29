@@ -120,7 +120,7 @@ export default function HomePage() {
             >
               <span className="text-white">Desktop Software</span>{' '}
               <br className="hidden md:block" />
-              <span className="gradient-text">Built for India</span>
+              <span className="gradient-text">Built for excelence</span>
             </motion.h1>
 
             {/* Sub */}
@@ -177,6 +177,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="font-display font-bold text-white">{p.price}<span className="text-gray-600 text-xs ml-1">+GST</span></span>
+                  
                   <Link href={`/products/${p.slug}`} className="text-ink-400 text-sm font-medium hover:text-ink-300 flex items-center gap-1">
                     View <ArrowRight className="w-4 h-4" />
                   </Link>
