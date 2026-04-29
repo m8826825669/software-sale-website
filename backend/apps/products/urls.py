@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .demo_views import request_demo
 
 urlpatterns = [
     path('',                    views.ProductListView.as_view(),       name='product_list'),
@@ -7,6 +8,7 @@ urlpatterns = [
     path('categories/',         views.CategoryListView.as_view(),      name='category_list'),
     path('testimonials/',       views.TestimonialListView.as_view(),   name='testimonials'),
     path('stats/',              views.site_stats,                      name='site_stats'),
+     path('demo-request/',       request_demo,                          name='demo_request'),
     path('<slug:slug>/',        views.ProductDetailView.as_view(),     name='product_detail'),
     path('admin/list/',         views.AdminProductListView.as_view(),  name='admin_product_list'),
     path('admin/<slug:slug>/',  views.AdminProductDetailViewWithUpload.as_view(), name='admin_product_detail'),
