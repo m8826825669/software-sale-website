@@ -37,3 +37,4 @@ celery>=5.3.6
 
 # ── Validation ───────────────────────────────────────────────────────────────
 djangorestframework[validator]
+weasyprint==68.1
