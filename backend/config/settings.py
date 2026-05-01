@@ -7,7 +7,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-production-use-strong-key')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+#ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+
+ALLOWED_HOSTS = ['157.245.248.210', 'www.vexenlabs.com', 'vexenlabs.com', 'api.vexenlabs.com']
 
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -16,6 +18,7 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'invoice',
 ]
 
 THIRD_PARTY_APPS = [
@@ -181,7 +184,7 @@ if not DEBUG:
 
 # ── App settings ──────────────────────────────────────────────────────────────
 SITE_NAME  = config('SITE_NAME',  default='SoftCraft Solutions')
-SITE_URL   = config('SITE_URL',   default='http://localhost:3000')
+SITE_URL   = config('SITE_URL',   default='https://vexenlabs.com')
 SUPPORT_EMAIL = config('SUPPORT_EMAIL', default='support@softcraft.in')
 
 DOWNLOAD_TOKEN_EXPIRY_HOURS = 2

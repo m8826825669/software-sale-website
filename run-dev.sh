@@ -1,6 +1,6 @@
 #!/bin/bash
 # ================================================================
-# SoftCraft Website — Development Quick Start (Linux / macOS)
+# VexenLabs Website — Development Quick Start (Linux / macOS)
 # ================================================================
 set -e
 
@@ -10,7 +10,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 echo -e "${BLUE}╔══════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║   SoftCraft Solutions — Dev Server  ║${NC}"
+echo -e "${BLUE}║   VexenLabs Solutions — Dev Server  ║${NC}"
 echo -e "${BLUE}╚══════════════════════════════════════╝${NC}"
 echo ""
 

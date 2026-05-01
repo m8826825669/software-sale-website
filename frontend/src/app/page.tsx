@@ -2,10 +2,11 @@
 import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
-import { ArrowRight, Shield, Download, Zap, Star, CheckCircle2, ChevronDown,
-         Users, Award, Globe, Lock, Cpu, HeadphonesIcon, ChevronUp } from 'lucide-react'
+import { Shield, Download, Zap, Star, CheckCircle2, ChevronDown,
+         ArrowRight, Users, Award, Globe, Lock, Cpu, HeadphonesIcon, ChevronUp } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import ProductCard from '@/components/ProductCard'
 import { productsAPI } from '@/lib/api'
 
 /* ── Animated counter ── */
@@ -37,40 +38,24 @@ const FEATURES = [
 ]
 
 const PRODUCTS_PREVIEW = [
-  {
-    emoji: '🏫', name: 'School ERP', slug: 'school-erp',
-    desc: 'Complete school management: admissions, attendance, fees, exams, library, and more.',
-    tags: ['Students', 'Attendance', 'Fees', 'Library'],
-    price: '₹4,999',
-  },
-  {
-    emoji: '🏥', name: 'Clinic Manager', slug: 'clinic-manager',
-    desc: 'Patient records, SOAP notes, prescriptions, appointment scheduling, and billing.',
-    tags: ['OPD', 'ABHA', 'Billing', 'WhatsApp'],
-    price: '₹7,999',
-    featured: true,
-  },
-  {
-    emoji: '💊', name: 'Medical Store', slug: 'medical-store',
-    desc: 'FEFO inventory, GST billing, barcode scanning, expiry alerts, and POS interface.',
-    tags: ['Inventory', 'GST', 'POS', 'FEFO'],
-    price: '₹3,499',
-  },
+  { id: '1', slug: 'school-erp',     name: 'School ERP',      emoji: '🏫', tagline: 'Complete school management: admissions, attendance, fees, exams, library, and more.', tags: ['Students', 'Attendance', 'Fees', 'Library'], price: '₹4,999', is_featured: false, demo_type: 'request' as const },
+  { id: '2', slug: 'clinic-manager', name: 'Clinic Manager',  emoji: '🏥', tagline: 'Patient records, SOAP notes, prescriptions, appointment scheduling, and billing.',     tags: ['OPD', 'ABHA', 'Billing', 'WhatsApp'],      price: '₹7,999', is_featured: true,  demo_type: 'request' as const },
+  { id: '3', slug: 'medical-store',  name: 'Medical Store',   emoji: '💊', tagline: 'FEFO inventory, GST billing, barcode scanning, expiry alerts, and POS interface.',    tags: ['Inventory', 'GST', 'POS', 'FEFO'],         price: '₹3,499', is_featured: false, demo_type: 'online'  as const },
 ]
 
-const TESTIMONIALS = [
+const TESTIMONIALS_FALLBACK = [
   {
-    name: 'Dr. Priya Sharma', role: 'Principal', company: 'DPS Noida',
+    author_name: 'Dr. Priya Sharma', author_role: 'Principal', author_company: 'DPS Noida',
     content: 'SchoolERP transformed our administration. What used to take 3 hours now takes 20 minutes. The fee collection module is excellent.',
     rating: 5, initials: 'PS',
   },
   {
-    name: 'Rajesh Agarwal', role: 'Pharmacist', company: 'Agarwal Medicals, Lucknow',
+    author_name: 'Rajesh Agarwal', author_role: 'Pharmacist', author_company: 'Agarwal Medicals, Lucknow',
     content: 'The Medical Store app paid for itself in the first week. Expiry tracking alone saved us ₹40,000 in wastage.',
     rating: 5, initials: 'RA',
   },
   {
-    name: 'Dr. Meena Joshi', role: 'General Physician', company: 'Joshi Clinic, Kanpur',
+    author_name: 'Dr. Meena Joshi', author_role: 'General Physician', author_company: 'Joshi Clinic, Kanpur',
     content: 'My patients love the WhatsApp prescription feature. The SOAP note generator saves 10 minutes per patient.',
     rating: 5, initials: 'MJ',
   },
@@ -87,9 +72,42 @@ const FAQS = [
 
 export default function HomePage() {
   const [faqs, setFaqs] = useState<number | null>(null)
+  const [heroProducts, setHeroProducts] = useState<any[]>(PRODUCTS_PREVIEW)
+  const [siteStats, setSiteStats] = useState({ customers: 0, sales: 0, products: 3 })
+  const [testimonials, setTestimonials] = useState<any[]>(TESTIMONIALS_FALLBACK)
   const heroRef = useRef(null)
 
   const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }
+
+  useEffect(() => {
+    // Fetch hero products
+    productsAPI.list({ page_size: 3 })
+      .then(res => {
+        const data = res.data.results || res.data
+        if (Array.isArray(data) && data.length > 0) setHeroProducts(data.slice(0, 3))
+      })
+      .catch(() => {})
+
+    // Fetch site stats
+    productsAPI.stats()
+      .then(res => {
+        const d = res.data
+        setSiteStats({
+          customers: d.total_customers || 0,
+          sales:     d.total_orders    || 0,
+          products:  d.total_products  || 3,
+        })
+      })
+      .catch(() => {})
+
+    // Fetch featured testimonials
+    productsAPI.testimonials(true)
+      .then(res => {
+        const data = res.data.results || res.data
+        if (Array.isArray(data) && data.length > 0) setTestimonials(data.slice(0, 3))
+      })
+      .catch(() => {})
+  }, [])
 
   return (
     <div className="min-h-screen bg-surface-950">
@@ -120,7 +138,7 @@ export default function HomePage() {
             >
               <span className="text-white">Desktop Software</span>{' '}
               <br className="hidden md:block" />
-              <span className="gradient-text">Built for excelence</span>
+              <span className="gradient-text">Built for India</span>
             </motion.h1>
 
             {/* Sub */}
@@ -161,28 +179,8 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }}
             className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6"
           >
-            {PRODUCTS_PREVIEW.map((p, i) => (
-              <motion.div key={p.slug}
-                whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                className={`card relative overflow-hidden ${p.featured ? 'border-ink-500/30' : ''}`}
-              >
-                {p.featured && (
-                  <div className="absolute top-3 right-3 badge-blue text-[10px]">Most Popular</div>
-                )}
-                <div className="text-4xl mb-4">{p.emoji}</div>
-                <h3 className="font-display font-bold text-lg text-white mb-2">{p.name}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed mb-4">{p.desc}</p>
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {p.tags.map(t => <span key={t} className="badge-blue text-[10px]">{t}</span>)}
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="font-display font-bold text-white">{p.price}<span className="text-gray-600 text-xs ml-1">+GST</span></span>
-                  
-                  <Link href={`/products/${p.slug}`} className="text-ink-400 text-sm font-medium hover:text-ink-300 flex items-center gap-1">
-                    View <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </motion.div>
+            {heroProducts.map((p, i) => (
+              <ProductCard key={p.slug} product={p} index={i} showRating={false} />
             ))}
           </motion.div>
         </div>
@@ -193,10 +191,10 @@ export default function HomePage() {
         <div className="container-xl">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { label: 'Happy Customers', value: 500, suffix: '+' },
-              { label: 'Applications Sold', value: 1200, suffix: '+' },
-              { label: 'Cities Served', value: 45, suffix: '+' },
-              { label: 'Uptime (No Server!)', value: 100, suffix: '%' },
+              { label: 'Happy Customers',   value: siteStats.customers, suffix: siteStats.customers > 0 ? '+' : '' },
+              { label: 'Licenses Sold',     value: siteStats.sales,     suffix: siteStats.sales > 0 ? '+' : '' },
+              { label: 'Products',          value: siteStats.products,  suffix: '' },
+              { label: 'Uptime (Offline!)', value: 100,                 suffix: '%' },
             ].map((s) => (
               <div key={s.label}>
                 <div className="font-display text-4xl font-extrabold gradient-text-blue mb-1">
@@ -249,9 +247,9 @@ export default function HomePage() {
             <h2 className="font-display text-4xl font-bold text-white">Loved by businesses across India</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t, i) => (
+            {testimonials.map((t, i) => (
               <motion.div
-                key={t.name}
+                key={t.author_name || t.name || i}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -259,18 +257,21 @@ export default function HomePage() {
                 className="card"
               >
                 <div className="flex gap-1 mb-4">
-                  {Array(t.rating).fill(0).map((_, j) => (
+                  {Array(t.rating || 5).fill(0).map((_, j) => (
                     <Star key={j} className="w-4 h-4 fill-gold-400 text-gold-400" />
                   ))}
                 </div>
                 <p className="text-gray-300 leading-relaxed mb-6 text-sm">"{t.content}"</p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-ink-700 flex items-center justify-center text-ink-200 font-bold text-sm">
-                    {t.initials}
+                    {t.initials || (t.author_name || t.name || '?')[0]}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white">{t.name}</p>
-                    <p className="text-xs text-gray-500">{t.role} · {t.company}</p>
+                    <p className="text-sm font-semibold text-white">{t.author_name || t.name}</p>
+                    <p className="text-xs text-gray-500">
+                      {t.author_role || t.role}
+                      {(t.author_company || t.company) ? ` · ${t.author_company || t.company}` : ''}
+                    </p>
                   </div>
                 </div>
               </motion.div>

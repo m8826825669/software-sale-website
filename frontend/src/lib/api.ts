@@ -2,11 +2,28 @@ import axios from 'axios'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
+
 const api = axios.create({
   baseURL: `${API_BASE}/api`,
   headers: { 'Content-Type': 'application/json' },
   timeout: 30000,
 })
+
+// Invoicing
+export async function createInvoice(data: any) {
+  const res = await fetch(`${API_BASE}/api/invoice/create/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+
+  return res.json()
+}
+
+export async function getInvoice(id: number) {
+  const res = await fetch(`${API_URL}/api/invoice/${id}/`)
+  return res.json()
+}
 
 // Attach access token to every request
 api.interceptors.request.use((config) => {

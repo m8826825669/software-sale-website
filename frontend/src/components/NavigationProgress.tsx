@@ -3,43 +3,48 @@ import { useEffect, useRef, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 export default function NavigationProgress() {
-  const pathname      = usePathname()
-  const searchParams  = useSearchParams()
-  const [visible, setVisible]   = useState(false)
+  const pathname     = usePathname()
+  const searchParams = useSearchParams()
   const [progress, setProgress] = useState(0)
-  const timerRef  = useRef<NodeJS.Timeout | null>(null)
-  const progressRef = useRef<NodeJS.Timeout | null>(null)
+  const [active,   setActive]   = useState(false)
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([])
+
+  const clearAll = () => {
+    timers.current.forEach(clearTimeout)
+    timers.current = []
+  }
 
   useEffect(() => {
-    // Start progress on route change
-    setVisible(true)
+    clearAll()
+    setActive(true)
     setProgress(10)
 
-    timerRef.current = setTimeout(() => setProgress(40), 100)
-    progressRef.current = setTimeout(() => setProgress(70), 300)
+    const t1 = setTimeout(() => setProgress(40),  100)
+    const t2 = setTimeout(() => setProgress(70),  300)
+    const t3 = setTimeout(() => setProgress(100), 600)
+    const t4 = setTimeout(() => { setActive(false); setProgress(0) }, 950)
 
-    const done = setTimeout(() => {
-      setProgress(100)
-      setTimeout(() => { setVisible(false); setProgress(0) }, 300)
-    }, 500)
-
-    return () => {
-      clearTimeout(timerRef.current!)
-      clearTimeout(progressRef.current!)
-      clearTimeout(done)
-    }
+    timers.current = [t1, t2, t3, t4]
+    return clearAll
   }, [pathname, searchParams])
 
-  if (!visible) return null
-
+  // Always render the div — never return null during navigation
+  // Hiding via opacity avoids React creating/destroying the node mid-transition
   return (
     <div
-      className="fixed top-0 left-0 z-[9999] h-[2px] transition-all duration-300 ease-out"
+      aria-hidden="true"
       style={{
-        width: `${progress}%`,
+        position:   'fixed',
+        top:        0,
+        left:       0,
+        zIndex:     9999,
+        height:     '2px',
+        width:      `${progress}%`,
         background: 'linear-gradient(to right, #5a5fff, #f6c84b)',
-        boxShadow: '0 0 8px rgba(90,95,255,0.6)',
-        opacity: progress === 100 ? 0 : 1,
+        boxShadow:  active ? '0 0 8px rgba(90,95,255,0.6)' : 'none',
+        opacity:    active && progress < 100 ? 1 : 0,
+        transition: 'width 200ms ease-out, opacity 300ms ease-out',
+        pointerEvents: 'none',
       }}
     />
   )
